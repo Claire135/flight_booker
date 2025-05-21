@@ -3,11 +3,11 @@
 <%= form_with url: flights_path, method: :get do |form| %>
 <div>
     <%= form.label :departure_airport_id, "Departure Airport: "%>
-    <%= form.collection_select :departure_airport_id, Airport.order(:code), :id, :code %>
+    <%= form.collection_select :departure_airport_id, Airport.order(:code), :id, :code, prompt: "Select departure airport" %>
 </div>
 <div>
-    <%= form.label :arrival_airport_id, "Destination Airport: "%>
-    <%= form.collection_select :arrival_airport_id, Airport.order(:code), :id, :code %>
+    <%= form.label :arrival_airport_id, "Arrival Airport: "%>
+    <%= form.collection_select :arrival_airport_id, Airport.order(:code), :id, :code, prompt: "Select arrival airport" %>
 </div>
 <div>
     <%= form.label :no_of_passengers, "Number of Passangers: "%>
@@ -15,14 +15,31 @@
 </div>
 <div>
     <%= form.label :start_date, "Date of Departure: "%>
-    <%= form.select :start_date, options_for_select(Flight.formatted_date_options) %>
+    <%= form.select :start_date, options_for_select(Flight.formatted_date_options), prompt: "Select departure date" %>
 </div>
 <div>
     <%= form.label :start_time, "Time of Departure:" %>
-    <%= form.select :start_time, options_for_select(Flight.formatted_time_options) %>
+    <%= form.select :start_time, options_for_select(Flight.formatted_time_options), prompt: "Select departure time " %>
 </div>
     <%= form.submit "Search" %>
 </div>
+
+<h2>Search Results</h2>
+
+<% if @flights.any?%>
+    <% @flights.each do |flight| %>
+        <div class = 'flight-container'>
+            <h3><strong><%= link_to "Flight from #{flight.departure_airport.code} to #{flight.arrival_airport.code}", flight_path(flight) %></strong></h3>
+            Flight date: <%= flight.formatted_date %><br>
+            Flight time: <%= flight.formatted_time%><br>
+            Duration: <%= flight.duration %> minutes
+        </div>
+    <% end %>
+<% else %>
+
+    <p> No flights available </p>
+<% end%>    
+    
 
 
 <% end %>

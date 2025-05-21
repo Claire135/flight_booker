@@ -19,4 +19,26 @@ class Flight < ApplicationRecord
     unique_times = order(:start_time).pluck(:start_time).uniq
     unique_times.map { |time| [ time.strftime("%I:%M") ] }
   end
+
+  def self.search(params)
+    flights = Flight.all
+
+    if params[:departure_airport_id].present?
+      flights = flights.where(departure_airport_id: params[:departure_airport_id])
+    end
+
+    if params[:arrival_airport_id].present?
+      flights = flights.where(arrival_airport_id: params[:arrival_airport_id])
+    end
+
+    if params[:start_date].present?
+      flights = flights.where(start_date: params[:start_date])
+    end
+
+    if params[:start_time].present?
+      flights = flights.where(start_time: params[:start_time])
+    end
+
+    flights
+  end
 end
