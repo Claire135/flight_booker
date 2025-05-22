@@ -1,0 +1,30 @@
+<h1>Selected Flight Details</h1>
+    <h3><strong>Flight from <%= @flight.departure_airport.code %> to <%= @flight.arrival_airport.code %></strong></h3>
+    Flight date: <%= @flight.formatted_date %><br>
+    Flight time: <%= @flight.formatted_time%><br>
+    Duration: <%= @flight.duration %> minutes<br>
+    No of Passengers: <%= @booking.no_of_passengers %>
+
+<h1>Your Details</h1>
+
+<%= form_with model: @booking do |form| %>
+    <%= form.hidden_field :flight_id %>
+    <%= form.hidden_field :no_of_passengers%>
+
+    <% @booking.passengers.each_with_index do |passenger, idx| %>
+        <fieldset>
+            <legend>Passenger <%= idx + 1 %></legend>
+            <%= form.fields_for :passengers, passenger do |pf| %>
+            <div>
+                <%= pf.label :name, "Passenger Name: " %><br>
+                <%= pf.text_field :name %>
+            </div>
+            <div>
+                <%= pf.label :email, "Passenger Email: "%>
+                <%= pf.email_field :email %>
+            </div>
+            <%end%>
+        </fieldset>
+    <% end %>
+    <%= form.submit "Confirm Booking" %>
+<%end%>

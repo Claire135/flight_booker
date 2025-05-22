@@ -1,5 +1,11 @@
 <h1>Flight Booker</h1>
 
+<% if params[:commit].present? && params[:departure_airport_id].blank? && params[:arrival_airport_id].blank? %>
+  <div class="error-message" style="color: red;">
+    Please select at least a departure or arrival airport.
+  </div>
+<% end %>
+
 <%= form_with url: flights_path, method: :get do |form| %>
 <div>
     <%= form.label :departure_airport_id, "Departure Airport: "%>
@@ -10,7 +16,7 @@
     <%= form.collection_select :arrival_airport_id, Airport.order(:code), :id, :code, prompt: "Select arrival airport" %>
 </div>
 <div>
-    <%= form.label :no_of_passengers, "Number of Passangers: "%>
+    <%= form.label :no_of_passengers, "Number of Passengers: "%>
     <%= form.select :no_of_passengers, 1..6 %>
 </div>
 <div>
@@ -22,24 +28,23 @@
     <%= form.select :start_time, options_for_select(Flight.formatted_time_options), prompt: "Select departure time " %>
 </div>
     <%= form.submit "Search" %>
-</div>
+<% end %>
 
-<h2>Search Results</h2>
 
-<% if @flights.any?%>
-    <% @flights.each do |flight| %>
-        <div class = 'flight-container'>
-            <h3><strong><%= link_to "Flight from #{flight.departure_airport.code} to #{flight.arrival_airport.code}", flight_path(flight) %></strong></h3>
-            Flight date: <%= flight.formatted_date %><br>
-            Flight time: <%= flight.formatted_time%><br>
-            Duration: <%= flight.duration %> minutes
-        </div>
-    <% end %>
-<% else %>
+<% if params[:departure_airport_id].present? || params[:arrival_airport_id].present? %>
+    <h2>Search Results</h2>
+        <% if @flights.any?%>
+            <% @flights.each do |flight| %>
+                <div class = 'flight-container'>
+                    <h3><strong>Flight from <%=flight.departure_airport.code %> to <%= flight.arrival_airport.code %></strong></h3>
+                    Flight date: <%= flight.formatted_date %><br>
+                    Flight time: <%= flight.formatted_time%><br>
+                    Duration: <%= flight.duration %> minutes
+                    <%= link_to "Select Flight", new_booking_path(flight_id: flight.id, no_of_passengers: @no_of_passengers), class: "btn btn-primary" %>
+            <% end %>
+        <% else %>
 
-    <p> No flights available </p>
-<% end%>    
-    
-
+            <p> No flights available </p>
+        <% end%>    
 
 <% end %>

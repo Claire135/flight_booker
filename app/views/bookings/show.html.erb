@@ -1,0 +1,19 @@
+<h1>Booking Confirmation</h1>
+
+<h2>Flight Details</h2>
+<h3><strong>Flight from <%= @flight.departure_airport.code %> to <%= @flight.arrival_airport.code %></strong></h3>
+Flight date: <%= @flight.formatted_date %><br>
+Flight time: <%= @flight.formatted_time%><br>
+Duration: <%= @flight.duration %> minutes<br>
+No of Passengers: <%= @booking.no_of_passengers %>
+
+<h2> Passenger Details </h2>
+<% @booking.passengers.each do |passenger| %>
+<p>
+    <strong>Passenger Name:</strong> <%= passenger.name%><br>
+    <strong>Passenger Email:</strong> <%= passenger.email%>
+</p>
+<% end %>
+
+<%= link_to "Return to Home Page", root_path%>
+
